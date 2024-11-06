@@ -11,7 +11,11 @@
   "license": "ISC",
   "description": "ByteLog Nutrition Tracker",
   "dependencies": {
-    "express": "^4.21.1"
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "express": "^4.21.1",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
