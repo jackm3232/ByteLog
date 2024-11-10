@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const itemSchema = new mongoose.Schema({
+const itemTemplateSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -24,4 +24,4 @@ const itemSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("Item", itemSchema);
+module.exports = mongoose.model("ItemTemplate", itemTemplateSchema);
