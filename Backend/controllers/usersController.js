@@ -16,7 +16,7 @@ const createNewUser = asyncHandler (async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ message: "All field are required" });
+    return res.status(400).json({ message: "Username and password required in body" });
   }
 
   const duplicate = await User.findOne({ username }).lean().exec();

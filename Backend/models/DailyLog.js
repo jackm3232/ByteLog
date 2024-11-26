@@ -11,6 +11,7 @@ const dailyLogSchema = new mongoose.Schema({
     required: true
   },
   items: [{
+    _id: false,
     itemTemplate: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -18,7 +19,7 @@ const dailyLogSchema = new mongoose.Schema({
     },
     quantity: {
       type: Number,
-      default: 1
+      required: true
     }
   }]
 });

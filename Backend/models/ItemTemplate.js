@@ -11,16 +11,12 @@ const itemTemplateSchema = new mongoose.Schema({
     required: true
   },
   calories: {
-    type: Number
+    type: Number,
+    required: true
   },
   protein: {
-    type: Number
-  },
-  carbohydrates: {
-    type: Number
-  },
-  fat: {
-    type: Number
+    type: Number,
+    required: true
   }
 });
 

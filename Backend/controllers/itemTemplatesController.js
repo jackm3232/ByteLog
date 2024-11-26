@@ -2,24 +2,29 @@ const ItemTemplate = require("../models/ItemTemplate");
 const asyncHandler = require("express-async-handler");
 
 const getAllItemTemplates = asyncHandler(async (req, res) => {
-  const { user } = req.body;
+  const { user } = req.params;
 
   if (!user) {
-    return res.status(400).json({ message: "User ID required" });
+    return res.status(400).json({ message: "User ID required in URL" });
   }
 
-  const itemTemplates = await ItemTemplate.find({ user: user }).lean();
+  const itemTemplates = await ItemTemplate.find({ user }).lean();
   if (!itemTemplates.length) {
-    return res.status(400).json({ message: "No items found" });
+    return res.status(400).json({ message: "No item templates found" });
   }
   res.json(itemTemplates);
 });
 
 const createItemTemplate = asyncHandler(async (req, res) => {
-  const { user, name, calories, protein, carbohydrates, fat } = req.body;
+  const { user } = req.params;
+  const { name, calories, protein } = req.body;
 
-  if (!user || !name) {
-    return res.status(400).json({ message: "User and name fields are required" });
+  if (!user) {
+    return res.status(400).json({ message: "User ID required in URL" });
+  }
+
+  if (!name || !calories || !protein) {
+    return res.status(400).json({ message: "Name, calories, and protein required in body" });
   }
 
   const duplicate = await ItemTemplate.findOne({ user, name }).exec();
@@ -31,9 +36,7 @@ const createItemTemplate = asyncHandler(async (req, res) => {
     user,
     name,
     calories,
-    protein,
-    carbohydrates,
-    fat
+    protein
   });
 
   if (newItemTemplate) {
@@ -45,48 +48,59 @@ const createItemTemplate = asyncHandler(async (req, res) => {
 });
 
 const updateItemTemplate = asyncHandler(async (req, res) => {
-  const { id, name, calories, protein, carbohydrates, fat } = req.body;
+  const { user } = req.params;
+  const { id, name, calories, protein } = req.body;
 
-  if (!id || !name) {
-    return res.status(400).json({ message: "ID and name of item template are required" });
+  if (!user) {
+    return res.status(400).json({ message: "User ID required in URL" });
   }
 
-  const itemTemplate = await ItemTemplate.findById(id).exec();
+  if (!id || !name || !calories || !protein) {
+    return res.status(400).json({ message: "Item template ID, name, calories, and protein required in body" });
+  }
+
+  const itemTemplate = await ItemTemplate.findOne({ user, _id: id }).exec();
 
   if (!itemTemplate) {
     return res.status(400).json({ message: "Item template not found" });
   }
 
-  const duplicate = await ItemTemplate.findOne({ name }).exec();
+  if (name !== itemTemplate.name) {
+    const duplicate = await ItemTemplate.findOne({ user, name }).exec();
 
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate item template name" });
+    if (duplicate && duplicate?._id.toString() !== id) {
+      return res.status(409).json({ message: `Duplicate item template name '${name}' for user ${user}` });
+    }
+
+    itemTemplate.name = name;
   }
 
-  itemTemplate.name = name;
   itemTemplate.calories = calories;
   itemTemplate.protein = protein;
-  itemTemplate.carbohydrates = carbohydrates;
-  itemTemplate.fat = fat;
 
   const updatedItemTemplate = await itemTemplate.save();
-  res.json({ message: `Item ${updatedItemTemplate.name} updated` });
+  res.json({ message: `Item template ${updatedItemTemplate.name} updated` });
 });
 
 const deleteItemTemplate = asyncHandler(async (req, res) => {
+  const { user } = req.params;
   const { id } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ message: "Item template ID required" });
+  if (!user) {
+    return res.status(400).json({ message: "User ID required in URL" });
   }
 
-  const itemTemplate = await ItemTemplate.findById(id).exec();
-  const name = itemTemplate.name;
+  if (!id) {
+    return res.status(400).json({ message: "Item template ID required in body" });
+  }
 
+  const itemTemplate = await ItemTemplate.findOne({ user, _id: id }).exec();
+  
   if (!itemTemplate) {
     return res.status(400).json({ message: "Item template not found" });
   }
 
+  const name = itemTemplate.name;
   await itemTemplate.deleteOne();
   res.json({ message: `Item template ${name} with ID ${id} deleted` });
 });
