@@ -81,11 +81,11 @@ const updateDailyLog = asyncHandler(async (req, res) => {
 
   const updatedDailyLog = await dailyLog.save();
 
-  const formattedDate = updatedDailyLog.date.toLocaleDateString('en-US', {
-    timeZone: 'UTC',
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
+  const formattedDate = updatedDailyLog.date.toLocaleDateString("en-US", {
+    timeZone: "UTC",
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
   });
   res.json({ message: `Daily log updated for ${formattedDate}` });
 });
@@ -108,11 +108,11 @@ const deleteDailyLog = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Daily log not found" });
   }
 
-  const formattedDate = dailyLog.date.toLocaleDateString('en-US', {
-    timeZone: 'UTC',
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
+  const formattedDate = dailyLog.date.toLocaleDateString("en-US", {
+    timeZone: "UTC",
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
   });
   await dailyLog.deleteOne();
 
