@@ -9,6 +9,7 @@ const getAllItemTemplates = asyncHandler(async (req, res) => {
   }
 
   const itemTemplates = await ItemTemplate.find({ user }).lean();
+
   if (!itemTemplates.length) {
     return res.status(400).json({ message: "No item templates found" });
   }
@@ -28,8 +29,9 @@ const createItemTemplate = asyncHandler(async (req, res) => {
   }
 
   const duplicate = await ItemTemplate.findOne({ user, name }).exec();
+
   if (duplicate) {
-    return res.status(409).json({ message: `Item template with name ${name} already exists for this user` });
+    return res.status(409).json({ message: `Item template with name "${name}" already exists` });
   }
 
   const newItemTemplate = await ItemTemplate.create({
@@ -40,7 +42,7 @@ const createItemTemplate = asyncHandler(async (req, res) => {
   });
 
   if (newItemTemplate) {
-    res.status(201).json({ message: `Item template ${name} created` });
+    res.status(201).json({ message: `Item template "${name}" created` });
   } 
   else {
     res.status(400).json({ message: "Invalid item template data received" });
@@ -69,7 +71,7 @@ const updateItemTemplate = asyncHandler(async (req, res) => {
     const duplicate = await ItemTemplate.findOne({ user, name }).exec();
 
     if (duplicate && duplicate?._id.toString() !== id) {
-      return res.status(409).json({ message: `Duplicate item template name '${name}' for user ${user}` });
+      return res.status(409).json({ message: `Item template with name "${name}" already exists` });
     }
 
     itemTemplate.name = name;
@@ -79,7 +81,7 @@ const updateItemTemplate = asyncHandler(async (req, res) => {
   itemTemplate.protein = protein;
 
   const updatedItemTemplate = await itemTemplate.save();
-  res.json({ message: `Item template ${updatedItemTemplate.name} updated` });
+  res.json({ message: `Item template "${updatedItemTemplate.name}" updated` });
 });
 
 const deleteItemTemplate = asyncHandler(async (req, res) => {
@@ -102,7 +104,8 @@ const deleteItemTemplate = asyncHandler(async (req, res) => {
 
   const name = itemTemplate.name;
   await itemTemplate.deleteOne();
-  res.json({ message: `Item template ${name} with ID ${id} deleted` });
+  
+  res.json({ message: `Item template "${name}" deleted` });
 });
 
 module.exports = {
