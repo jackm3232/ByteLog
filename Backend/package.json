@@ -1,5 +1,5 @@
 {
-  "name": "bytelog",
+  "name": "backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -9,7 +9,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "ByteLog Nutrition Tracker",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
