@@ -28,7 +28,7 @@ const createItemTemplate = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Name, calories, and protein required in body" });
   }
 
-  const duplicate = await ItemTemplate.findOne({ user, name }).exec();
+  const duplicate = await ItemTemplate.findOne({ user, name }).collation({ locale: "en", strength: 2 }).exec();
 
   if (duplicate) {
     return res.status(409).json({ message: `Item template with name "${name}" already exists` });
@@ -64,11 +64,11 @@ const updateItemTemplate = asyncHandler(async (req, res) => {
   const itemTemplate = await ItemTemplate.findOne({ user, _id: id }).exec();
 
   if (!itemTemplate) {
-    return res.status(400).json({ message: "Item template not found" });
+    return res.status(404).json({ message: "Item template not found" });
   }
 
   if (name !== itemTemplate.name) {
-    const duplicate = await ItemTemplate.findOne({ user, name }).exec();
+    const duplicate = await ItemTemplate.findOne({ user, name }).collation({ locale: "en", strength: 2 }).exec();
 
     if (duplicate && duplicate?._id.toString() !== id) {
       return res.status(409).json({ message: `Item template with name "${name}" already exists` });
@@ -104,7 +104,7 @@ const deleteItemTemplate = asyncHandler(async (req, res) => {
 
   const name = itemTemplate.name;
   await itemTemplate.deleteOne();
-  
+
   res.json({ message: `Item template "${name}" deleted` });
 });
 

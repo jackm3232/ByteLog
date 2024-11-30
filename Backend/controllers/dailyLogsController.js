@@ -28,7 +28,7 @@ const createDailyLog = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Date, calories, and protein required in body" });
   }
 
-  const duplicate = await DailyLog.findOne({ user, date }).exec();
+  const duplicate = await DailyLog.findOne({ user, date }).collation({ locale: "en", strength: 2 }).exec();
 
   if (duplicate) {
     return res.status(409).json({ message: "A daily log already exists for this date" });
@@ -67,7 +67,7 @@ const updateDailyLog = asyncHandler(async (req, res) => {
   }
 
   if (date.toString() !== dailyLog.date.toString()) {
-    const duplicate = await DailyLog.findOne({ user, date }).exec();
+    const duplicate = await DailyLog.findOne({ user, date }).collation({ locale: "en", strength: 2 }).exec();
 
     if (duplicate && duplicate?._id.toString() !== id) {
       return res.status(409).json({ message: "A daily log already exists for this date" });
