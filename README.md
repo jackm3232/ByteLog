@@ -1,6 +1,6 @@
-#Welcome to ByteLog!
+# Welcome to ByteLog!
 
-##ByteLog allows you to easily track your daily calories and protein.
+## ByteLog allows you to easily track your daily calories and protein.
 
-##-Create templates for food items
-##-Keep daily nutrition logs      
+## -Create templates for food items
+## -Keep daily nutrition logs      
